@@ -10,7 +10,7 @@
 * @date: 2015-04-21
 */
 
-var IMPORTER_DIR 	= "queryImporter/"; 
+var IMPORTER_DIR 	= "./"; 
 var TMP_DIR 	 	= IMPORTER_DIR+"tmp/"; 
 var QUERIES_DIR  	= TMP_DIR+"queries/"; 
 
@@ -322,12 +322,15 @@ function sendQueriesToMongo(data, db, doneCallback){
 				if(err){
 					console.log("Could not fetch user "+global_vars.pdc_user+" from MongoDB: "+err); 
 					db.close(); 
+					doneCallback();
 				}else{
 					if(val.length < 1){
 						console.log("WARNING: Could not find user: "+global_vars.pdc_user+" in MongoDB"); 
+						doneCallback();
 						return; 
 					}else if(val.length > 1){
 						console.log("WARNING: Found to many users with username: "+global_vars.pdc_user+" in MongoDB"); 
+						doneCallback();
 						return; 
 					}else{
 						pushQueries(val[0]); 
@@ -393,12 +396,15 @@ function sendFunctionsToMongo(data, db, doneCallback){
 				if(err){
 					console.log("Could not fetch user "+global_vars.pdc_user+" from MongoDB: "+err); 
 					db.close(); 
+					doneCallback(); 
 				}else{
 					if(val.length < 1){
 						console.log("WARNING: Could not find user: "+global_vars.pdc_user+" in MongoDB"); 
+						doneCallback();
 						return; 
 					}else if(val.length > 1){
 						console.log("WARNING: Found to many users with username: "+global_vars.pdc_user+" in MongoDB"); 
+						doneCallback();
 						return; 
 					}else{
 						pushFunctions(val[0]); 
