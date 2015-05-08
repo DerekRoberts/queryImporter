@@ -21,7 +21,7 @@ var global_vars = {
 	port: 			null, 
 	database: 		null, 
 	queries_repo:  "https://github.com/PhysiciansDataCollaborative/queries.git", 
-	reclone: 		false, 
+	reclone: 		true, 
 	pdc_user:		null
 }; 
 
