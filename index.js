@@ -366,7 +366,7 @@ function sendFunctionsToMongo(data, db, doneCallback){
 					delete upsertData._id;  //delete the ID field so mongo doesn't get confused
 
 					Library_Function.findOneAndUpdate(
-						{title: f.title}, 
+						{title: d.title}, 
 						upsertData,
 						{upsert : true},
 						function(err){
