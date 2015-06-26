@@ -141,7 +141,7 @@ function processArgs(args){
 		if(args["pdc-user"] != null && args["pdc-user"] != undefined){
 			global_vars.pdc_user = args["pdc-user"]; 
 		}else{
-			global_vars.pdc_user = "pdcadmin"; 
+			global_vars.pdc_user = "admin"; 
 		}
 
 		return "import"; 
