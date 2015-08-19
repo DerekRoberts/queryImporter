@@ -95,6 +95,7 @@ function QueryImporter(proc) {
 
 
         console.log("Starting import...");
+        console.log("------------------");
 
         proc.clone();
 
@@ -117,35 +118,36 @@ function QueryImporter(proc) {
 
         var reclone = constants.RECLONE || true;
 
+        reclone = eval(reclone);
+
         //make a directory to put the repo in:
         if (!fs.existsSync(constants.TMP_DIR)) {
             fs.mkdirSync(constants.TMP_DIR);
         }
 
-        var child = null;
-
         var cmd = "git clone --branch " + constants.BRANCH + " " + constants.REPO + " " + constants.QUERIES_DIR;
 
-        console.log(cmd);
         if (reclone) {
+
+            console.log("Removing old " + constants.QUERIES_DIR + " if it exists and recloning from: " + constants.REPO);
 
             if (fs.existsSync(constants.QUERIES_DIR)) {
                 //if the repo exists already, delete it and pull a fresh copy.
-                console.log("Removing old queries/ repo");
-                child = execSync("rm -rf " + constants.QUERIES_DIR);
+                execSync("rm -rf " + constants.QUERIES_DIR);
             }
 
             //clone a new copy of the the repo.
             console.log("Cloning into: " + constants.REPO + " branch: " + constants.BRANCH);
-
-            child = execSync(cmd);
+            execSync(cmd);
 
         } else {
 
+            console.log("Reclone was false, will not overwrite any existing code in: " + constants.QUERIES_DIR);
+
             if (!fs.existsSync(constants.QUERIES_DIR)) {
                 //clone a new copy of the the repo.
-                console.log("Cloning into: " + constants.REPO);
-                child = execSync(cmd);
+                console.log("Cloning into: " + constants.REPO + " branch: " + constants.BRANCH);
+                execSync(cmd);
             }
 
         }
