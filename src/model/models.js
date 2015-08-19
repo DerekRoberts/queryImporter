@@ -8,12 +8,29 @@ var mongoose = require("mongoose");
 
 var querySchema = mongoose.Schema(
     {
-        title      : String,
-        _type      : {type: String, default: "Query"},
-        description: String,
-        map        : String,
-        reduce     : String,
-        user_id    : mongoose.Schema.ObjectId
+        title               : String,
+        _type               : {type: String, default: "Query"},
+        description         : String,
+        display_name        : String,
+        unit                : String,
+        target              : {
+            value      : String,
+            reference  : String,
+            description: String
+        },
+        query_type          : String,
+        status              : String,
+        panels              : mongoose.Schema.Array,
+        contact             : String,
+        definition          : String,
+        visualization_labels: {
+            x_axis: String,
+            y_axis: String,
+            title : String
+        },
+        map                 : String,
+        reduce              : String,
+        user_id             : mongoose.Schema.ObjectId
     }, {
         collection: 'queries'
     }
