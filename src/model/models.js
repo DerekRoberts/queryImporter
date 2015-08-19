@@ -20,7 +20,7 @@ var querySchema = mongoose.Schema(
         },
         query_type          : String,
         status              : String,
-        panels              : mongoose.Schema.Array,
+        panels: Array,
         contact             : String,
         definition          : String,
         visualization_labels: {
@@ -57,8 +57,14 @@ var userSchema = mongoose.Schema(
     }
 );
 
-var Query            = mongoose.model("Query", querySchema);
-var Library_Function = mongoose.model("LibraryFunction", functionSchema);
-var User             = mongoose.model("User", userSchema);
+var init_models = function (conn) {
 
-module.exports = {Query: Query, Function: Library_Function, User: User};
+    var Query            = conn.model("Query", querySchema, "queries");
+    var Library_Function = conn.model("LibraryFunction", functionSchema);
+    var User             = conn.model("User", userSchema);
+
+    return {Query: Query, Library_Function: Library_Function, User: User};
+
+};
+
+module.exports = {init: init_models};
