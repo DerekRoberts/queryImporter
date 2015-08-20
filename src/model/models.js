@@ -11,6 +11,7 @@ var querySchema = mongoose.Schema(
         title               : String,
         _type               : {type: String, default: "Query"},
         description         : String,
+        name  : String,
         display_name        : String,
         unit                : String,
         target              : {

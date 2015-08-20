@@ -8,12 +8,14 @@ var mongoose_models = require("./model/models");
 var fs              = require('fs');
 var constants       = require("./constants");
 var execSync        = require("child_process").execSync;
+var QueryFactory = require("./QueryFactory").QueryFactory;
 
 function QueryImporter(proc) {
 
     proc = proc || {};
 
     proc.models = null;
+    proc.queryFactory = QueryFactory();
 
     var that = {};
 
@@ -93,11 +95,16 @@ function QueryImporter(proc) {
 
     var importData = function (callback) {
 
-
         console.log("Starting import...");
         console.log("------------------");
 
-        proc.clone();
+        if (!proc.clone()) {
+            return callback(constants.QUERIES_DIR + " did not have expected format, failed.");
+        }
+
+        //after this we can assume that the queries are in a valid directory structure.
+
+        var d = proc.getDirectives();
 
         return callback();
 
@@ -113,6 +120,97 @@ function QueryImporter(proc) {
 
 
     };
+
+    /**
+     * @return {Array} contains objects, each object represents a query or a function.
+     */
+    var getDirectives = function () {
+
+
+        var directives = [];
+
+        //get all of the file names in an array
+        var files = fs.readdirSync(constants.QUERIES_DIR + "directives/");
+
+        //tmp variable for holding directives.
+        var d = null;
+        var q = null;
+
+        for (var i in files) {
+
+            //1. Filter out all non-json files based on file extensions.
+
+            if (!files[i].match(".*.json$")) {
+                //not a json file, skip.
+                continue;
+            }
+
+            //2. Read in file and parse the JSON into an object
+
+            try {
+
+                d = JSON.parse(fs.readFileSync(constants.QUERIES_DIR + "directives/" + files[i], "utf8"));
+
+            } catch (e) {
+                console.log("Could not read directive from: " + constants.QUERIES_DIR + "directives/" + files[i]);
+                continue;
+            }
+
+            //3. Generate queries and or function objects from the directives.
+
+            if (d && d.type && d.type === "QUERY") {
+
+                //create a new query object.
+
+                q = proc.queryFactory.create(d, proc.conn);
+
+                if (!q) {
+                    //response from queryFactory was null, it could not create the query, skip this.
+
+
+                } else {
+
+                    console.log(q);
+
+                }
+
+            }
+
+
+        }
+
+    };
+
+    /**
+     * Ensures that the expected directories exist in the queries/ directory.
+     *
+     * @return {Boolean} - true if the format for the queries directory is as expected. False otherwise.
+     */
+    var verifyQueriesDirectoryFormat = function () {
+
+        if (!fs.existsSync(constants.QUERIES_DIR) || !fs.lstatSync(constants.QUERIES_DIR).isDirectory()) {
+            console.log("Could not find any directory at: " + constants.QUERIES_DIR);
+            return false;
+        } else if (!fs.existsSync(constants.QUERIES_DIR + "queries/") || !fs.lstatSync(constants.QUERIES_DIR + "queries/").isDirectory()) {
+            console.log("Could not find any directory at: " + constants.QUERIES_DIR + "queries/");
+            return false;
+        } else if (!fs.existsSync(constants.QUERIES_DIR + "directives/") || !fs.lstatSync(constants.QUERIES_DIR + "directives/").isDirectory()) {
+            console.log("Could not find any directory at: " + constants.QUERIES_DIR + "directive/");
+            return false;
+        } else if (!fs.existsSync(constants.QUERIES_DIR + "functions/") || !fs.lstatSync(constants.QUERIES_DIR + "functions/").isDirectory()) {
+            console.log("Could not find any directory at: " + constants.QUERIES_DIR + "functions/");
+            return false;
+        } else if (!fs.existsSync(constants.QUERIES_DIR + "test/") || !fs.lstatSync(constants.QUERIES_DIR + "test/").isDirectory()) {
+            console.log("Could not find any directory at: " + constants.QUERIES_DIR + "test/");
+            return false;
+        } else {
+            console.log("Passed directory structure tests");
+            return true;
+        }
+
+
+    };
+
 
     var clone = function () {
 
@@ -152,10 +250,15 @@ function QueryImporter(proc) {
 
         }
 
+        //ensure that the result is what we expect.
+        return proc.verifyQueriesDirectoryFormat();
+
     };
 
-    proc.connectPrecondition = connectPrecondition;
-    proc.clone               = clone;
+    proc.connectPrecondition          = connectPrecondition;
+    proc.clone                        = clone;
+    proc.verifyQueriesDirectoryFormat = verifyQueriesDirectoryFormat;
+    proc.getDirectives                = getDirectives;
 
     that.connect = connect;
     that.import  = importData;

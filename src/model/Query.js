@@ -130,7 +130,7 @@ Query.prototype.setMap = function (m) {
  */
 Query.prototype.setReduce = function (r) {
 
-    if (!m || typeof r !== "string") {
+    if (!r || typeof r !== "string") {
 
         throw new TypeError("Query.setReduce(String) expects single String parameter, got: " + (typeof m) + " instead.");
     }
@@ -152,12 +152,15 @@ Query.prototype.setReduce = function (r) {
  */
 Query.prototype.setDisplayName = function (d) {
 
-    if (!m || typeof d !== "string") {
+    if (!d || typeof d !== "string") {
 
         throw new TypeError("Query.setDisplayName(String) expects single String parameter, got: " + (typeof m) + " instead.");
     }
 
     this.query.display_name = d;
+
+    //TODO: Eventually remove this, the 'name' field is required by hQuery for populating its UI.
+    this.query.name = d;
 
 };
 

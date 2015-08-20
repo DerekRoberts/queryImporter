@@ -10,11 +10,15 @@ q.connect("localhost", "27017", "query_composer_development", function (x) {
         q.import(function () {
 
             console.log("Done!");
+            process.exit();
 
         });
 
     } else {
+
         console.log("Failed to connect...");
+        process.exit();
+
     }
 });
 
