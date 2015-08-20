@@ -1,8 +1,9 @@
 /**
+ * Constants that the importer depends on. These may specified at the commandline when running the importer.
+ * This file contains their default values which are used if they are not avaliable via process.env.XXXX.
+ *
  * Created by sdiemert on 15-08-19.
  */
-
-
 
 module.exports = {
 

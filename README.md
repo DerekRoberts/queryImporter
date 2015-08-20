@@ -18,13 +18,26 @@ The general order of operations for this script are:
 
 ### Usage
 
-Execute this script from the scripts directory, `/vagrant/docker/scripts/` 
+Run the script from within the `queryImporter` directory.
 
 This will run the importer on the local MongoDB: 
 
-`nodejs queryImporter import --mongo-host=127.0.0.1 --mongo-db=query_composer_development --mongo-port=27019`
+`nodejs index.js import --mongo-host=127.0.0.1 --mongo-db=query_composer_development --mongo-port=27017`
 
 Specifiy a username to push the scripts into the database with: `--pdc-user=USERNAME`, not the username must exist in the `users` collection in the existing MongoDB. 
+
+You may specify environment variables in typical NodeJS fashion, for example: 
+ 
+ `RECLONE=true BRANCH=PDC-0.1.4 REPO=<someUrl> nodejs index.js import --mongo-host=127.0.0.1 --mongo-db=query_composer_development --mongo-port=27017` 
+ 
+ Environment variables avaiable are: 
+ 
+ * `RECLONE` (default: true) - tells the importer to delete any old queries it finds and pull down a fresh copy. 
+ * `REPO` (default: PDC queries repo) - the repository to pull queries from.
+ * `BRANCH` (default: "master") - the branch to checkout when cloning, this may also be a tag name, e.g. "PDC-0.1.0"
+ 
+ Other variables can be found in `src/constants.js`, however DO NOT use them unless you know what you are doing!
+
 
 ### Future Work
 
@@ -32,13 +45,9 @@ The following are a list of things that could be updated/changed about the curre
 
 * Pull reduce functions for the appropriate location in the repo. There is currently a hardcoded string that is the reduce function, this is not ideal....
 * Linting of the queries and functions 
-    - Also checking to make sure map() functions are present in the queries before they are pushed into the DB.
     - We currently assume the user knows what they are doing......
-    - Suggest implementing these fixes in `index.js:getTextBlobs()` function. 
 * Change the update/overwrite behaviour to support a more robust understanding of a query lifecycle. 
     - This will likely require some significant changes
-* Code refactor to make it prettier. 
-
 
 ### Dependencies
 
