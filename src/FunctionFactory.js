@@ -2,10 +2,10 @@
  * Created by sdiemert on 15-08-19.
  */
 
-var Factory   = require("./Factory").Factory;
-var Query     = require("./model/LibraryFunction").LibraryFunction;
-var fs        = require("fs");
-var constants = require("./constants");
+var Factory         = require("./Factory").Factory;
+var LibraryFunction = require("./model/LibraryFunction").LibraryFunction;
+var fs              = require("fs");
+var constants       = require("./constants");
 
 function FunctionFactory(proc) {
 
@@ -26,13 +26,15 @@ function FunctionFactory(proc) {
     var create = function (dir, user, conn) {
 
         if (!proc.verifyInput(dir)) {
+
+            console.log(dir.name + " failed verifyInput()");
+
             return null;
         }
 
         var f = new LibraryFunction(conn);
 
         f.setUser(user);
-
         f.setName(dir.name);
 
         var code = proc.fetchCode(dir.path);
@@ -66,7 +68,7 @@ function FunctionFactory(proc) {
 
             return false;
 
-        } else if (!dir.type || dir.type !== "FUNCITON") {
+        } else if (!dir.type || dir.type !== "FUNCTION") {
 
             return false;
 
@@ -93,4 +95,4 @@ function FunctionFactory(proc) {
     return that;
 }
 
-module.exports = {QueryFactory: FunctionFactory};
+module.exports = {FunctionFactory: FunctionFactory};

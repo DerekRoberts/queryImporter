@@ -8,8 +8,10 @@ var mongoose_models = require("./model/models");
 var fs              = require('fs');
 var constants       = require("./constants");
 var execSync        = require("child_process").execSync;
-var QueryFactory = require("./QueryFactory").QueryFactory;
-var async        = require("async");
+var QueryFactory    = require("./QueryFactory").QueryFactory;
+var FunctionFactory = require("./FunctionFactory").FunctionFactory;
+var async           = require("async");
+var util            = require("util");
 
 /**
  * An object to import objects (queries and functions) into the MongoDatabase.
@@ -23,9 +25,10 @@ function QueryImporter(proc) {
 
     proc = proc || {};
 
-    proc.models = null;
-    proc.queryFactory = QueryFactory();
-    proc.user   = null;
+    proc.models          = null;
+    proc.queryFactory    = QueryFactory();
+    proc.functionFactory = FunctionFactory();
+    proc.user            = null;
 
     proc.rejectedFunctions = 0;
     proc.rejectedQueries   = 0;
@@ -167,7 +170,7 @@ function QueryImporter(proc) {
 
         //after this we can assume that the queries are in a valid directory structure.
 
-        var items = proc.getQueriesFromDirectives();
+        var items = proc.getItemsFromDirectives();
 
         proc.commitItems(items, callback);
 
@@ -191,7 +194,7 @@ function QueryImporter(proc) {
     /**
      * @return {Array} contains objects, each object represents a query or a function.
      */
-    var getQueriesFromDirectives = function () {
+    var getItemsFromDirectives = function () {
 
         var directives = [];
 
@@ -201,6 +204,7 @@ function QueryImporter(proc) {
         //tmp variable for holding directives.
         var d = null;
         var q = null;
+        var f = null;
 
         var toReturn = [];
 
@@ -245,7 +249,18 @@ function QueryImporter(proc) {
 
             } else if (d && d.type && d.type == "FUNCTION") {
 
-                //TODO: Implement function management.
+                f = proc.functionFactory.create(d, proc.user, proc.conn);
+
+                if (f) {
+
+                    proc.acceptedFunctions++;
+                    toReturn.push(f);
+
+                } else {
+
+                    proc.rejectedQueries++;
+
+                }
 
             }
 
@@ -255,7 +270,7 @@ function QueryImporter(proc) {
 
     };
 
-    var commitItems               = function (items, callback) {
+    var commitItems             = function (items, callback) {
 
         async.each(
             items,
@@ -351,10 +366,10 @@ function QueryImporter(proc) {
     proc.connectPrecondition          = connectPrecondition;
     proc.clone                        = clone;
     proc.verifyQueriesDirectoryFormat = verifyQueriesDirectoryFormat;
-    proc.getQueriesFromDirectives = getQueriesFromDirectives;
-    proc.commitItems              = commitItems;
-    proc.getUser                  = getUser;
-    proc.importDataPrecondition   = importDataPrecondition;
+    proc.getItemsFromDirectives = getItemsFromDirectives;
+    proc.commitItems            = commitItems;
+    proc.getUser                = getUser;
+    proc.importDataPrecondition = importDataPrecondition;
 
     that.connect = connect;
     that.import  = importData;

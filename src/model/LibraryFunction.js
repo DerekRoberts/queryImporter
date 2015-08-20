@@ -8,7 +8,7 @@ var LibraryFunction = function (conn) {
 
     this.conn = conn;
 
-    this.fun = new this.conn.models.Library_Function();
+    this.fun = new this.conn.models.LibraryFunction();
 
     this.fun.name       = null;
     this.fun.definition = null;
@@ -20,14 +20,14 @@ var LibraryFunction = function (conn) {
 
 LibraryFunction.prototype.commit = function (next) {
 
-    var x = this.query.toObject();
+    var x = this.fun.toObject();
 
     delete x._id;
 
     var that = this;
 
-    this.conn.models.Query.findOneAndUpdate(
-        {title: that.query.title},
+    this.conn.models.LibraryFunction.findOneAndUpdate(
+        {name: that.fun.name},
         x,
         {upsert: true},
         function (err) {
@@ -38,7 +38,7 @@ LibraryFunction.prototype.commit = function (next) {
 
             } else {
 
-                console.log(that.query.title + " was committed to Mongo");
+                console.log(that.fun.name + " was committed to Mongo");
 
             }
 
