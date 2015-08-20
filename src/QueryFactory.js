@@ -2,16 +2,20 @@
  * Created by sdiemert on 15-08-19.
  */
 
-var Factory = require("./Factory").Factory;
-var Query   = require("./model/Query").Query;
+var Factory   = require("./Factory").Factory;
+var Query     = require("./model/Query").Query;
+var fs        = require("fs");
+var constants = require("./constants");
 
 function QueryFactory(proc) {
 
     proc = proc || {};
 
-    var that = Factory();
+    //inherits from Factory object.
+    var that = Factory(proc);
 
     /**
+     * Creates a new Query object from the data in a directive object.
      *
      * @param dir {Object} the directive object for the query.
      * @param conn {Object} Mongoose connection object that contains the models we need.
@@ -24,8 +28,6 @@ function QueryFactory(proc) {
             return null;
         }
 
-        console.log("query: " + dir.title + " passed verifyInput()");
-
         var q = new Query(conn);
 
         q.setTitle(dir.title);
@@ -33,11 +35,19 @@ function QueryFactory(proc) {
         q.setDescription(dir.description);
         q.setType(dir.query_type);
 
+        var code = proc.fetchCode(dir.map);
 
-        //TODO: Makes these fetch code....
-        q.setMap(dir.map);
+        if (!code) {
+            console.log("Failed to get query from: " + dir.map);
+            return null;
+        } else {
+
+            q.setMap(code);
+
+        }
+
+        //TODO: Put call to fetchCode(path) for the reduce function as well.
         //q.setReduce(dir.reduce);
-
 
         //the remainder of these fields are optional, so we need to check that they are
         //non-null before we try to use them.
@@ -58,12 +68,17 @@ function QueryFactory(proc) {
 
         } catch (e) {
 
-            console.log("failed to create a non-critical field in query object");
+            console.log("failed to create a non-critical field in query object, error was: " + e);
 
         }
 
+        // if we get here, then we have a populated Query object.
+        // we now return it.
+
+        return q;
 
     };
+
 
     /**
      * Checks that the query's input is valid.

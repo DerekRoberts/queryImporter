@@ -231,7 +231,7 @@ Query.prototype.setPanels = function (p) {
 
     for (var i = 0; i < p.length; i++) {
 
-        if (!p[i] || !(p[i] instanceof "String") || !QUERY_PANELS.indexOf(type) < 0) {
+        if (!p[i] || typeof p[i] !== "string" || !QUERY_PANELS.indexOf(p[i]) < 0) {
 
             //clear the panels array before we throw the error.
             this.query.panels = [];
