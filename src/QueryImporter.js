@@ -48,6 +48,8 @@ function QueryImporter(proc) {
 
         var s = "mongodb://" + host + ":" + port + "/" + db;
 
+        console.log("Attempting to connect to mongo: " + s);
+
         var conn = mongoose.createConnection();
 
         conn.open(s, {mongos: false}, function () {
@@ -136,14 +138,14 @@ function QueryImporter(proc) {
             console.log("QueryImporter.connectPrecondition() : Failed host check");
             return false
 
-        } else if (!port || typeof port !== 'string' || !portRegex.exec(port)) {
+        } else if (!port || (typeof port !== 'string' && typeof port !== "number") || !portRegex.exec(port)) {
 
-            console.log("QueryImporter.connectPrecondition() : Failed port check");
+            console.log("QueryImporter.connectPrecondition() : Failed port check, port was: " + port + ", type was: " + typeof port);
             return false;
 
-        } else if (!db || typeof port !== 'string') {
+        } else if (!db || typeof db !== 'string') {
 
-            console.log("QueryImporter.connectPrecondition() : Failed db check");
+            console.log("QueryImporter.connectPrecondition() : Failed db check. db was: " + db + ", type was: " + typeof db);
             return false;
 
         } else {
