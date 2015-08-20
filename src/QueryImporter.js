@@ -9,17 +9,32 @@ var fs              = require('fs');
 var constants       = require("./constants");
 var execSync        = require("child_process").execSync;
 var QueryFactory = require("./QueryFactory").QueryFactory;
+var async        = require("async");
 
+/**
+ * An object to import objects (queries and functions) into the MongoDatabase.
+ * @constructor
+ *
+ * @param proc {Object} allows sharing of "protected" fields between parent and child objects.
+ *
+ * @returns {QueryImporter}
+ */
 function QueryImporter(proc) {
 
     proc = proc || {};
 
     proc.models = null;
     proc.queryFactory = QueryFactory();
+    proc.user   = null;
+
+    proc.rejectedFunctions = 0;
+    proc.rejectedQueries   = 0;
+    proc.acceptedFunctions = 0;
+    proc.acceptedQueries   = 0;
 
     var that = {};
 
-    var connect = function (host, port, db, next) {
+    var connect = function (host, port, db, username, next) {
 
         if (!proc.connectPrecondition(host, port, db)) {
 
@@ -46,16 +61,59 @@ function QueryImporter(proc) {
                 proc.conn = conn;
                 mongoose_models.init(conn);
 
-                next(true);
+                proc.getUser(username, function (success) {
+
+                    return next(success);
+
+                });
+
 
             }
 
-
         });
-
 
     };
 
+    var getUser = function (username, next) {
+
+        proc.conn.models.User.find(
+            {username: username},
+            function (err, val) {
+
+                if (err) {
+
+                    console.log("QueryImporter.getUser(String, Function) failed with error: " + err);
+                    return next(false);
+
+                } else {
+
+                    if (val.length < 1) {
+
+                        //unable to find username.
+                        console.log("Unable to find user in Mongo with username: " + username);
+                        return next(false);
+
+                    } else if (val.length > 1) {
+
+                        //to many users with same name.
+                        console.log("Found to many users in Mongo with username: " + username);
+                        return next(false);
+
+                    } else {
+
+                        //save the user in the protected object for use later.
+                        proc.user = val[0];
+                        return next(true);
+
+                    }
+
+                }
+
+
+            }
+        )
+
+    };
 
     /**
      * Determines if the preconditions for connecting to MongoDB are met.
@@ -95,6 +153,11 @@ function QueryImporter(proc) {
 
     var importData = function (callback) {
 
+        if (!proc.importDataPrecondition(callback)) {
+            callback()
+        }
+
+
         console.log("Starting import...");
         console.log("------------------");
 
@@ -104,19 +167,23 @@ function QueryImporter(proc) {
 
         //after this we can assume that the queries are in a valid directory structure.
 
-        var d = proc.getDirectives();
+        var items = proc.getQueriesFromDirectives();
 
-        return callback();
+        proc.commitItems(items, callback);
 
-        var q = new Query(proc.conn);
+    };
 
-        q.setTitle("PDC-001");
+    var importDataPrecondition = function (cb) {
 
-        q.commit(function (e) {
-
-            callback();
-
-        });
+        if (!cb || !(cb instanceof Function)) {
+            console.log("QueryImporter.importData(Function) expects a single Function type parameter as a callback");
+            return false;
+        } else if (!proc.user) {
+            console.log("QueryImporter.importData(Function) requires that the proc.user field be set.");
+            return false;
+        } else {
+            return true;
+        }
 
 
     };
@@ -124,8 +191,7 @@ function QueryImporter(proc) {
     /**
      * @return {Array} contains objects, each object represents a query or a function.
      */
-    var getDirectives = function () {
-
+    var getQueriesFromDirectives = function () {
 
         var directives = [];
 
@@ -135,6 +201,8 @@ function QueryImporter(proc) {
         //tmp variable for holding directives.
         var d = null;
         var q = null;
+
+        var toReturn = [];
 
         for (var i in files) {
 
@@ -156,29 +224,55 @@ function QueryImporter(proc) {
                 continue;
             }
 
-            //3. Generate queries and or function objects from the directives.
+            //3. Generate queries and function objects from the directives.
 
             if (d && d.type && d.type === "QUERY") {
 
                 //create a new query object.
 
-                q = proc.queryFactory.create(d, proc.conn);
+                q = proc.queryFactory.create(d, proc.user, proc.conn);
 
-                if (!q) {
-                    //response from queryFactory was null, it could not create the query, skip this.
+                if (q) {
 
+                    proc.acceptedQueries++;
+                    toReturn.push(q);
 
                 } else {
 
-                    console.log(q);
+                    proc.rejectedQueries++;
 
                 }
 
-            }
+            } else if (d && d.type && d.type == "FUNCTION") {
 
+                //TODO: Implement function management.
+
+            }
 
         }
 
+        return toReturn;
+
+    };
+
+    var commitItems               = function (items, callback) {
+
+        async.each(
+            items,
+            function (item, next) {
+
+                item.commit(next);
+
+            }, function (err) {
+
+                if (err) {
+                    console.log(err)
+                }
+
+                callback(err);
+
+            }
+        )
     };
 
     /**
@@ -210,7 +304,6 @@ function QueryImporter(proc) {
 
 
     };
-
 
     var clone = function () {
 
@@ -258,7 +351,10 @@ function QueryImporter(proc) {
     proc.connectPrecondition          = connectPrecondition;
     proc.clone                        = clone;
     proc.verifyQueriesDirectoryFormat = verifyQueriesDirectoryFormat;
-    proc.getDirectives                = getDirectives;
+    proc.getQueriesFromDirectives = getQueriesFromDirectives;
+    proc.commitItems              = commitItems;
+    proc.getUser                  = getUser;
+    proc.importDataPrecondition   = importDataPrecondition;
 
     that.connect = connect;
     that.import  = importData;

@@ -18,17 +18,20 @@ function QueryFactory(proc) {
      * Creates a new Query object from the data in a directive object.
      *
      * @param dir {Object} the directive object for the query.
+     * @param user {User} the user object to associate with this query.
      * @param conn {Object} Mongoose connection object that contains the models we need.
      *
      * @return {Query} a query object
      */
-    var create = function (dir, conn) {
+    var create = function (dir, user, conn) {
 
         if (!proc.verifyInput(dir)) {
             return null;
         }
 
         var q = new Query(conn);
+
+        q.setUser(user);
 
         q.setTitle(dir.title);
         q.setDisplayName(dir.display_name);
@@ -38,8 +41,10 @@ function QueryFactory(proc) {
         var code = proc.fetchCode(dir.map);
 
         if (!code) {
+
             console.log("Failed to get query from: " + dir.map);
             return null;
+
         } else {
 
             q.setMap(code);

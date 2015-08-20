@@ -2,6 +2,8 @@
  * Wrapper around the Mongoose models to allow for functions to handle and consistency check.
  */
 
+var mongoose = require("mongoose");
+
 var QUERY_REGEX = "[A-Z]{3,5}-[a-zA-Z0-9]{3,}"; //matches things of form: PDC-XXX...
 
 var QUERY_TYPES = ["RATIO", "CLASS", "STRATIFIED"]; //Allowed query types.
@@ -26,6 +28,7 @@ var Query = function (conn) {
 
 };
 
+
 Query.prototype.commit = function (next) {
 
     var x = this.query.toObject();
@@ -46,7 +49,7 @@ Query.prototype.commit = function (next) {
 
             } else {
 
-                console.log(that.query.title + " was updated in MongoDB");
+                console.log(that.query.title + " was committed to Mongo");
 
             }
 
@@ -55,6 +58,15 @@ Query.prototype.commit = function (next) {
         }
     );
 
+};
+
+Query.prototype.setUser = function (user) {
+
+    if (!user) {
+        throw new TypeError("Query.setUser(User) expects a single User type parameter, got: " + user + " instead.");
+    }
+
+    this.query.user_id = mongoose.Types.ObjectId(user._id)
 };
 
 /**
