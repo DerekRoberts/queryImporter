@@ -15,7 +15,7 @@ module.exports = {
 
     //control vars
     RECLONE: process.env.RECLONE || true,
-    REPO   : process.env.REPO || "https://github.com/PhysiciansDataCollaborative/queries.git",
+    REPO   : process.env.REPO || "https://github.com/PDCbc/queries.git",
     BRANCH : process.env.BRANCH || "master"
 
 };
