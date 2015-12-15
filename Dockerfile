@@ -18,7 +18,7 @@
 #
 FROM phusion/passenger-nodejs
 MAINTAINER derek.roberts@gmail.com
-ENV RELEASE 0.2.0
+ENV RELEASE 0.2.1
 
 
 # Packages, including update to Node.js 0.12
