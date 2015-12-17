@@ -80,6 +80,19 @@ function FunctionFactory(proc) {
 
             return false;
 
+        } else if (dir.name === "initiatives") {
+
+
+            if (constants.SKIP_INITS) {
+
+                // The SKIP_INITS flag is used to toggle whether the initiatives() function is imported or not.
+                //  If SKIP_INITS is true, the current initiatives function in the database will NOT be overwritten.
+                //  If SKIP_INITS is false (or not set), the current initiatives function in the database WILL BE overwritten.
+
+                return false;
+
+            }
+
         } else {
 
             return true;

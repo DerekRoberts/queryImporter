@@ -35,6 +35,7 @@ You may specify environment variables in typical NodeJS fashion, for example:
  * `RECLONE` (default: true) - tells the importer to delete any old queries it finds and pull down a fresh copy. 
  * `REPO` (default: PDC queries repo) - the repository to pull queries from.
  * `BRANCH` (default: "master") - the branch to checkout when cloning, this may also be a tag name, e.g. "PDC-0.1.0"
+ * `SKIP_INITS` (default: false) - determines whether to overwrite the initiatives() function with the default initiatives and remove all physician history.
  
  Other variables can be found in `src/constants.js`, however DO NOT use them unless you know what you are doing!
 

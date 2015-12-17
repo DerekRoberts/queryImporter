@@ -14,8 +14,9 @@ module.exports = {
     QUERIES_DIR: process.env.QUERIES_DIR || "./tmp/queries/",
 
     //control vars
-    RECLONE: process.env.RECLONE || true,
-    REPO   : process.env.REPO || "https://github.com/PhysiciansDataCollaborative/queries.git",
-    BRANCH : process.env.BRANCH || "master"
+    RECLONE   : process.env.RECLONE || true,
+    REPO      : process.env.REPO || "https://github.com/PhysiciansDataCollaborative/queries.git",
+    BRANCH    : process.env.BRANCH || "master",
+    SKIP_INITS: process.env.SKIP_INITS || false
 
 };
