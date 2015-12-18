@@ -36,8 +36,9 @@ RUN apt-get update; \
 # Prepare /app/ folder
 #
 WORKDIR /app/
-RUN git clone https://github.com/pdcbc/queryImporter.git -b ${RELEASE} .; \
-    npm config set python /usr/bin/python2.7; \
+#RUN git clone https://github.com/pdcbc/queryImporter.git -b ${RELEASE} .; \
+COPY . .
+RUN npm config set python /usr/bin/python2.7; \
     npm install
 
 

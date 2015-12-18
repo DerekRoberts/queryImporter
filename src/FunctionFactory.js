@@ -82,16 +82,22 @@ function FunctionFactory(proc) {
 
         } else if (dir.name === "initiatives") {
 
-
-            if (constants.SKIP_INITS) {
+            if (constants.SKIP_INITS==='true' || constants.SKIP_INITS===true) {
 
                 // The SKIP_INITS flag is used to toggle whether the initiatives() function is imported or not.
                 //  If SKIP_INITS is true, the current initiatives function in the database will NOT be overwritten.
                 //  If SKIP_INITS is false (or not set), the current initiatives function in the database WILL BE overwritten.
 
+		console.log("Intentionally causing verifyInput() to fail for initiatives() function."); 
+		console.log("The initiatives() function will NOT be overwritten by the importer."); 
+
                 return false;
 
-            }
+            }else{
+
+		return true; 
+
+	    }
 
         } else {
 
