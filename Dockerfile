@@ -36,11 +36,12 @@ RUN apt-get update; \
 # Prepare /app/ folder
 #
 WORKDIR /app/
-RUN git clone https://github.com/pdcbc/queryImporter.git -b ${RELEASE} .; \
-    npm config set python /usr/bin/python2.7; \
+#RUN git clone https://github.com/pdcbc/queryImporter.git -b ${RELEASE} .; \
+COPY . .
+RUN npm config set python /usr/bin/python2.7; \
     npm install
 
 
 # Start on boot
 #
-CMD node index.js import --mongo-host=hubdb --mongo-db=query_composer_development --mongo-port=27017
+CMD SKIP_INITS=${SKIP_INIT_OVERWRITE} node index.js import --mongo-host=hubdb --mongo-db=query_composer_development --mongo-port=27017

@@ -1,6 +1,7 @@
 var parseArgs = require('minimist'); //provides argument processing.
 
 var QueryImporter = require("./src/QueryImporter").QueryImporter;
+var constants = require("./src/constants"); 
 
 var q = QueryImporter();
 
@@ -50,6 +51,9 @@ function processArgs(args) {
 
 function runImport() {
 
+    console.log("Constants: ");
+    console.log(constants);
+
     q.connect(global_vars.host, global_vars.port, global_vars.database, global_vars.pdc_user, function (x) {
 
         if (x) {
@@ -60,6 +64,7 @@ function runImport() {
 
                 console.log("==========================");
 
+	    	console.log("Done import"); 
                 if (err) {
                     console.log("Importing failed with error:");
                     console.log(err);
