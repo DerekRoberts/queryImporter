@@ -10,7 +10,11 @@
 #   local/query_importer:latest
 #
 # Linked containers
-# - HubDB: --link hubdb:hubdb
+# - HubDB:          --link hubdb:hubdb
+#
+# Modify default settings
+# - Skip initiative
+#     queries?:     -e SKIP_INITS=<yes/no>
 #
 # Releases
 # - https://github.com/PDCbc/query_importer/releases
@@ -36,12 +40,35 @@ RUN apt-get update; \
 # Prepare /app/ folder
 #
 WORKDIR /app/
-#RUN git clone https://github.com/pdcbc/queryImporter.git -b ${RELEASE} .; \
-COPY . .
-RUN npm config set python /usr/bin/python2.7; \
+RUN git clone https://github.com/pdcbc/queryImporter.git -b ${RELEASE} .; \
+    npm config set python /usr/bin/python2.7; \
     npm install
 
 
-# Start on boot
+# Create startup script and make it executable
 #
-CMD SKIP_INITS=${SKIP_INIT_OVERWRITE} node index.js import --mongo-host=hubdb --mongo-db=query_composer_development --mongo-port=27017
+RUN mkdir -p /etc/service/app/; \
+    ( \
+      echo "#!/bin/bash"; \
+      echo "#"; \
+      echo "set -e -o nounset"; \
+      echo ""; \
+      echo ""; \
+      echo "# Set variables"; \
+      echo "#"; \
+      echo "SKIP_INITS=\${SKIP_INITS:-false}"; \
+      echo ""; \
+      echo ""; \
+      echo "# Start service"; \
+      echo "#"; \
+      echo "cd /app/"; \
+      echo "/sbin/setuser app SKIP_INITS=\${SKIP_INITS} node index.js \\"; \
+      echo "  --mongo-host=hubdb --mongo-db=query_composer_development --mongo-port=27017"; \
+    )  \
+      >> /etc/service/app/run; \
+    chmod +x /etc/service/app/run
+
+
+# Run Command
+#
+CMD ["/sbin/my_init"]
