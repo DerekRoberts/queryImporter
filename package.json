@@ -1,7 +1,7 @@
 {
   "name": "queryImporter",
   "version": "0.0.0",
-  "repository": "https://github.com/PhysiciansDataCollaborative/QueryImporter",
+  "repository": "https://github.com/PDCbc/QueryImporter",
   "description": "A tool for importing queries into the MongoDB",
   "main": "index.js",
   "scripts": {
