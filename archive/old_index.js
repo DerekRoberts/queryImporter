@@ -1,7 +1,7 @@
 /**
  * A utility for managing the queries in the mongo database.
  * This tool pulls down a version of the queries found in the queries repo
- *    which can be found at: https://github.com/PhysiciansDataCollaborative/queries
+ *    which can be found at: https://github.com/PDCbc/queries
  *
  * The tool relies on the structure of the queries repo to know where to look for queries
  *  and their associated helper functions.
@@ -20,23 +20,23 @@ var global_vars = {
     pass        : null,
     port        : null,
     database    : null,
-    queries_repo: "https://github.com/PhysiciansDataCollaborative/queries.git",
+    queries_repo: "https://github.com/PDCbc/queries.git",
     reclone     : true,
     pdc_user    : null
 };
 
 
-var parseArgs = require('minimist'); //provides argument processing. 
+var parseArgs = require('minimist'); //provides argument processing.
 var fs       = require("fs");
 var sys      = require("sys");
 var execSync = require("child_process").execSync;
-//var util 	  = require("./mongoUtil.js"); 
+//var util 	  = require("./mongoUtil.js");
 var assert   = require("assert");
 var async    = require("async");
 var mongoose = require("mongoose");
 
 
-//MODELS: 
+//MODELS:
 
 var querySchema = mongoose.Schema(
     {
@@ -193,7 +193,7 @@ function clone(reclone) {
  * file structure is compatible with this script.
  *
  * Checks are based on the file tree given in the README.md of the
- * 	queries repo. (https://github.com/PhysiciansDataCollaborative/queries)
+ * 	queries repo. (https://github.com/PDCbc/queries)
  *
  * return - true if the check passes, false otherwise.
  */
@@ -475,5 +475,5 @@ function main() {
 }
 
 
-//call the main function of tool. 
-main(); 
+//call the main function of tool.
+main();
