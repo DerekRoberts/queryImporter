@@ -4,7 +4,7 @@ This a tool to assist installing and updating queries into the Mongo database on
 
 The general order of operations for this script are:
 
-1. Clone down the queries repository (https://github.com/PDCbc/queries) into a `tmp/` directory
+1. Clone down the queries repository (https://github.com/HDCbc/queries) into a `tmp/` directory
 2. Check the queries repo for integrity, i.e. expected folder structure:
     - `queries_repo/queries/`
     - `queries_repo/functions/`
@@ -24,17 +24,17 @@ This will run the importer on the local MongoDB:
 
 `nodejs index.js import --mongo-host=127.0.0.1 --mongo-db=query_composer_development --mongo-port=27017`
 
-Specifiy a username to push the scripts into the database with: `--pdc-user=USERNAME`, not the username must exist in the `users` collection in the existing MongoDB.
+Specifiy a username to push the scripts into the database with: `--hdc-user=USERNAME`, not the username must exist in the `users` collection in the existing MongoDB.
 
 You may specify environment variables in typical NodeJS fashion, for example:
 
- `RECLONE=true BRANCH=PDC-0.1.4 REPO=<someUrl> nodejs index.js import --mongo-host=127.0.0.1 --mongo-db=query_composer_development --mongo-port=27017`
+ `RECLONE=true BRANCH=HDC-0.1.4 REPO=<someUrl> nodejs index.js import --mongo-host=127.0.0.1 --mongo-db=query_composer_development --mongo-port=27017`
 
  Environment variables avaiable are:
 
  * `RECLONE` (default: true) - tells the importer to delete any old queries it finds and pull down a fresh copy.
- * `REPO` (default: PDC queries repo) - the repository to pull queries from.
- * `BRANCH` (default: "master") - the branch to checkout when cloning, this may also be a tag name, e.g. "PDC-0.1.0"
+ * `REPO` (default: HDC queries repo) - the repository to pull queries from.
+ * `BRANCH` (default: "master") - the branch to checkout when cloning, this may also be a tag name, e.g. "HDC-0.1.0"
  * `SKIP_INITS` (default: false) - determines whether to overwrite the initiatives() function with the default initiatives and remove all physician history.
 
  Other variables can be found in `src/constants.js`, however DO NOT use them unless you know what you are doing!

@@ -4,7 +4,7 @@
 
 var mongoose = require("mongoose");
 
-var QUERY_REGEX = "[A-Z]{3,5}-[a-zA-Z0-9]{3,}"; //matches things of form: PDC-XXX...
+var QUERY_REGEX = "[A-Z]{3,5}-[a-zA-Z0-9]{3,}"; //matches things of form: HDC-XXX...
 
 var QUERY_TYPES = ["RATIO", "CLASS", "STRATIFIED"]; //Allowed query types.
 var QUERY_PANELS = ["PPhRR", "PopulationHealth", "PracticeReflection", "Attachment"];
@@ -71,7 +71,7 @@ Query.prototype.setUser = function (user) {
 
 /**
  * Sets the title of the query. Note, the title is used as the unique idenitifier for the query
- * across the PDC system. It should have form "XXX-xxxx" for example: "PDC-001"
+ * across the HDC system. It should have form "XXX-xxxx" for example: "HDC-001"
  *
  * @throws {TypeError} - If the input is invalid type or does not meet the formatting specification for query titles.
  *

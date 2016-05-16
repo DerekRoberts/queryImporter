@@ -1,10 +1,10 @@
-# Dockerfile for the PDC's query_importer service
+# Dockerfile for the HDC's query_importer service
 #
 #
 # Imports queries from GitHub repo into HubDB.  Links to HubDB.
 #
 # Example:
-# sudo docker pull pdcbc/query_importer
+# sudo docker pull healthdatacoalition/queryimporter
 # sudo docker run --rm --name=query_importer -h query_importer \
 #   --link composerdb:composerdb \
 #   local/query_importer:latest
