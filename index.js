@@ -38,10 +38,10 @@ function processArgs(args) {
             global_vars.user = args["mongo-pass"];
         }
 
-        if (args["pdc-user"] != null && args["pdc-user"] != undefined) {
-            global_vars.pdc_user = args["pdc-user"];
+        if (args["hdc-user"] != null && args["hdc-user"] != undefined) {
+            global_vars.hdc_user = args["hdc-user"];
         } else {
-            global_vars.pdc_user = "admin";
+            global_vars.hdc_user = "admin";
         }
 
         return "import";
@@ -54,7 +54,7 @@ function runImport() {
     console.log("Constants: ");
     console.log(constants);
 
-    q.connect(global_vars.host, global_vars.port, global_vars.database, global_vars.pdc_user, function (x) {
+    q.connect(global_vars.host, global_vars.port, global_vars.database, global_vars.hdc_user, function (x) {
 
         if (x) {
 

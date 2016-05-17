@@ -15,7 +15,7 @@ module.exports = {
 
     //control vars
     RECLONE   : process.env.RECLONE || true,
-    REPO      : process.env.REPO || "https://github.com/PDCbc/queries.git",
+    REPO      : process.env.REPO || "https://github.com/HDCbc/queries.git",
     BRANCH    : process.env.BRANCH || "master",
     SKIP_INITS: process.env.SKIP_INITS || false
 
