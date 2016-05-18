@@ -1,7 +1,7 @@
 var parseArgs = require('minimist'); //provides argument processing.
 
 var QueryImporter = require("./src/QueryImporter").QueryImporter;
-var constants = require("./src/constants"); 
+var constants = require("./src/constants");
 
 var q = QueryImporter();
 
@@ -41,7 +41,7 @@ function processArgs(args) {
         if (args["hdc-user"] != null && args["hdc-user"] != undefined) {
             global_vars.hdc_user = args["hdc-user"];
         } else {
-            global_vars.hdc_user = "admin";
+            global_vars.hdc_user = "maintenance";
         }
 
         return "import";
@@ -64,7 +64,7 @@ function runImport() {
 
                 console.log("==========================");
 
-	    	console.log("Done import"); 
+	    	console.log("Done import");
                 if (err) {
                     console.log("Importing failed with error:");
                     console.log(err);
@@ -114,4 +114,3 @@ function main() {
 
 //Call the main function;
 main();
-
