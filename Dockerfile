@@ -1,20 +1,16 @@
-# Dockerfile for the PDC's query_importer service
+# Dockerfile for the HDC's query_importer service
 #
 #
 # Imports queries from GitHub repo into HubDB.  Links to HubDB.
 #
 # Example:
-# sudo docker pull pdcbc/query_importer
+# sudo docker pull healthdatacoalition/queryimporter
 # sudo docker run --rm --name=query_importer -h query_importer \
-#   --link hubdb:hubdb \
+#   --link composerdb:composerdb \
 #   local/query_importer:latest
 #
 # Linked containers
-# - HubDB:          --link hubdb:hubdb
-#
-# Modify default settings
-# - Skip initiative
-#     queries?:     -e SKIP_INITS=<yes/no>
+# - MongoDB: --link composerdb:composerdb
 #
 #
 FROM phusion/passenger-nodejs
@@ -42,5 +38,5 @@ RUN npm config set python /usr/bin/python2.7; \
 
 # Run Command
 #
-CMD SKIP_INITS=${SKIP_INITS:-false} node index.js import --mongo-host=hubdb \
+CMD SKIP_INITS=${SKIP_INITS:-false} node index.js import --mongo-host=composerdb \
       --mongo-db=query_composer_development --mongo-port=27017

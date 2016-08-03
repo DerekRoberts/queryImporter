@@ -1,7 +1,7 @@
 var parseArgs = require('minimist'); //provides argument processing.
 
 var QueryImporter = require("./src/QueryImporter").QueryImporter;
-var constants = require("./src/constants"); 
+var constants = require("./src/constants");
 
 var q = QueryImporter();
 
@@ -38,10 +38,10 @@ function processArgs(args) {
             global_vars.user = args["mongo-pass"];
         }
 
-        if (args["pdc-user"] != null && args["pdc-user"] != undefined) {
-            global_vars.pdc_user = args["pdc-user"];
+        if (args["hdc-user"] != null && args["hdc-user"] != undefined) {
+            global_vars.hdc_user = args["hdc-user"];
         } else {
-            global_vars.pdc_user = "admin";
+            global_vars.hdc_user = "maintenance";
         }
 
         return "import";
@@ -54,7 +54,7 @@ function runImport() {
     console.log("Constants: ");
     console.log(constants);
 
-    q.connect(global_vars.host, global_vars.port, global_vars.database, global_vars.pdc_user, function (x) {
+    q.connect(global_vars.host, global_vars.port, global_vars.database, global_vars.hdc_user, function (x) {
 
         if (x) {
 
@@ -64,7 +64,7 @@ function runImport() {
 
                 console.log("==========================");
 
-	    	console.log("Done import"); 
+	    	console.log("Done import");
                 if (err) {
                     console.log("Importing failed with error:");
                     console.log(err);
@@ -114,4 +114,3 @@ function main() {
 
 //Call the main function;
 main();
-

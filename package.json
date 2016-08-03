@@ -1,7 +1,7 @@
 {
   "name": "queryImporter",
   "version": "0.0.0",
-  "repository": "https://github.com/PDCbc/QueryImporter",
+  "repository": "https://github.com/HDCbc/QueryImporter",
   "description": "A tool for importing queries into the MongoDB",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "queryImporter",
     "queries",
     "importer",
-    "PDC",
+    "HDC",
     "physcians",
     "data",
     "collaborative"
